@@ -1,6 +1,8 @@
 package uk.gov.dwp.uc.pairtest.service;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.Test;
@@ -9,66 +11,67 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.Spy;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import thirdparty.paymentgateway.TicketPaymentService;
+import thirdparty.paymentgateway.TicketPaymentServiceImpl;
 import thirdparty.seatbooking.SeatReservationService;
+import thirdparty.seatbooking.SeatReservationServiceImpl;
 import uk.gov.dwp.uc.pairtest.domain.TicketPurchaseRequest;
 import uk.gov.dwp.uc.pairtest.exception.InvalidPurchaseException;
 import uk.gov.dwp.uc.pairtest.exception.ResponseMessage;
 import uk.gov.dwp.uc.pairtest.util.TicketServiceTestUtil;
 
 @ExtendWith(MockitoExtension.class)
-public class TicketServiceTest {
-	
-	@InjectMocks
+class TicketServiceTest {
+
+	@Mock
 	private TicketServiceImpl ticketService;
-	
-	@Mock
-	private final TicketPaymentService ticketPaymentService;
-	
-	@Mock
-	private final SeatReservationService seatReservationService;
-	
+
+	@InjectMocks
+	private TicketPaymentServiceImpl ticketPaymentService;
+
+	@InjectMocks
+	private SeatReservationServiceImpl seatReservationService;
+
 	@Test
-	private void purchaseTickets_success()throws Exception
-	{
-		ticketPaymentService.makePayment(Mockito.anyLong(), Mockito.anyInt());
-		seatReservationService.reserveSeat(Mockito.anyLong(), Mockito.anyInt());
-		ticketService.purchaseTickets(TicketServiceTestUtil.getTicketPurchaseRequest_Success());
+	void purchaseTickets_success() throws Exception {
+		ticketPaymentService.makePayment(Mockito.anyLong(), 10);
+		seatReservationService.reserveSeat(123456, 10);
+		assertDoesNotThrow(
+				() -> ticketService.purchaseTickets(TicketServiceTestUtil.getTicketPurchaseRequest_Success()));
+		Mockito.verify(ticketService, Mockito.times(1)).purchaseTickets(TicketServiceTestUtil.getTicketPurchaseRequest_Success());
 	}
-	
+
 	@Test
-	private void purchaseTickets_InvalidPurchaseException_TicketCountExceed() throws Exception
-	{
-		ticketPaymentService.makePayment(Mockito.anyLong(), Mockito.anyInt());
-		seatReservationService.reserveSeat(Mockito.anyLong(), Mockito.anyInt());
-		InvalidPurchaseException invalidPurchaseException=new InvalidPurchaseException(ResponseMessage.TICKET_COUNT_EXCEED);
-		when(ticketService.purchaseTickets(TicketServiceTestUtil.getTicketPurchaseRequest_TicketCountExceed_Exception()))
-		.thenThrow(invalidPurchaseException);
-		assertEquals(invalidPurchaseException.getMessage(), ResponseMessage.TICKET_COUNT_EXCEED);
+	void purchaseTickets_InvalidPurchaseException_TicketCountExceed() throws InvalidPurchaseException {
+		ticketPaymentService.makePayment(1212, 100);
+		seatReservationService.reserveSeat(1212, 10);
+		assertThrows(InvalidPurchaseException.class, () ->ticketService
+				.purchaseTickets(TicketServiceTestUtil.getTicketPurchaseRequest_TicketCountExceed_Exception()));
+		Mockito.verify(ticketService, Mockito.times(1))
+				.purchaseTickets(TicketServiceTestUtil.getTicketPurchaseRequest_TicketCountExceed_Exception());
 	}
-	
+
 	@Test
-	private void purchaseTickets_InvalidPurchaseException_InvalidAccountid() throws Exception
-	{
-		ticketPaymentService.makePayment(Mockito.anyLong(), Mockito.anyInt());
-		seatReservationService.reserveSeat(Mockito.anyLong(), Mockito.anyInt());
-		InvalidPurchaseException invalidPurchaseException=new InvalidPurchaseException(ResponseMessage.INVALID_ACCOUNT_ID);
-		when(ticketService.purchaseTickets(TicketServiceTestUtil.getTicketPurchaseRequest_InvalidAccountId_Exception()))
-		.thenThrow(invalidPurchaseException);
-		assertEquals(invalidPurchaseException.getMessage(), ResponseMessage.INVALID_ACCOUNT_ID);
+	private void purchaseTickets_InvalidPurchaseException_InvalidAccountid() throws InvalidPurchaseException {
+		ticketPaymentService.makePayment(1212, 100);
+		seatReservationService.reserveSeat(1212, 10);
+		assertThrows(InvalidPurchaseException.class, () ->ticketService
+				.purchaseTickets(TicketServiceTestUtil.getTicketPurchaseRequest_InvalidAccountId_Exception()));
+		Mockito.verify(ticketService, Mockito.times(1))
+				.purchaseTickets(TicketServiceTestUtil.getTicketPurchaseRequest_InvalidAccountId_Exception());
 	}
-	
+
 	@Test
-	private void purchaseTickets_InvalidPurchaseException_withoutAdult() throws Exception
-	{
-		ticketPaymentService.makePayment(Mockito.anyLong(), Mockito.anyInt());
-		seatReservationService.reserveSeat(Mockito.anyLong(), Mockito.anyInt());
-		InvalidPurchaseException invalidPurchaseException=new InvalidPurchaseException(ResponseMessage.WITHOUT_ADULT_TICKET);
-		when(ticketService.purchaseTickets(TicketServiceTestUtil.getTicketPurchaseRequest_WithoutAdult_Exception()))
-		.thenThrow(invalidPurchaseException);
-		assertEquals(invalidPurchaseException.getMessage(), ResponseMessage.WITHOUT_ADULT_TICKET);
+	private void purchaseTickets_InvalidPurchaseException_withoutAdult() throws InvalidPurchaseException {
+		ticketPaymentService.makePayment(1212, 100);
+		seatReservationService.reserveSeat(1212, 10);
+		assertThrows(InvalidPurchaseException.class, () ->ticketService
+				.purchaseTickets(TicketServiceTestUtil.getTicketPurchaseRequest_WithoutAdult_Exception()));
+		Mockito.verify(ticketService, Mockito.times(1))
+				.purchaseTickets(TicketServiceTestUtil.getTicketPurchaseRequest_WithoutAdult_Exception());
 	}
 
 }
