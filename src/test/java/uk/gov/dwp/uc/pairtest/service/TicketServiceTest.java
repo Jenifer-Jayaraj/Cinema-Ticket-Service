@@ -22,7 +22,7 @@ import uk.gov.dwp.uc.pairtest.util.TicketServiceTestUtil;
 public class TicketServiceTest {
 	
 	@InjectMocks
-	private TicketService ticketService;
+	private TicketServiceImpl ticketService;
 	
 	@Mock
 	private final TicketPaymentService ticketPaymentService;
