@@ -4,7 +4,7 @@
 package uk.gov.dwp.uc.pairtest.exception;
 
 /**
- * @author jeni
+ * @author jenifer
  *
  */
 public class ResponseMessage {

@@ -18,8 +18,7 @@ import jakarta.validation.constraints.NotNull;
 @JsonInclude(Include.NON_NULL)
 public final class TicketPurchaseRequest {
 
-	@Min(0)
-    private final long accountId;
+	private final long accountId;
 	
 	@Valid
 	@NotNull(message = "Atleast one adult ticket needed")

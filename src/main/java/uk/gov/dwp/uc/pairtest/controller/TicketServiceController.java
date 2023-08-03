@@ -18,7 +18,7 @@ import uk.gov.dwp.uc.pairtest.exception.ResponseMessage;
 import uk.gov.dwp.uc.pairtest.service.TicketService;
 
 /**
- * @author jeni
+ * @author jenifer
  *
  */
 @RestController

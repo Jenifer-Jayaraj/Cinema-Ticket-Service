@@ -6,7 +6,7 @@ package thirdparty.seatbooking;
 import org.springframework.stereotype.Service;
 
 /**
- * @author jeni
+ * @author jenifer
  *
  */
 @Service

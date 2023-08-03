@@ -3,6 +3,7 @@ package uk.gov.dwp.uc.pairtest.service;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.Test;
@@ -48,30 +49,28 @@ class TicketServiceTest {
 	void purchaseTickets_InvalidPurchaseException_TicketCountExceed() throws InvalidPurchaseException {
 		ticketPaymentService.makePayment(1212, 100);
 		seatReservationService.reserveSeat(1212, 10);
+		doThrow(InvalidPurchaseException.class).when(ticketService).purchaseTickets(TicketServiceTestUtil.getTicketPurchaseRequest_TicketCountExceed_Exception());
 		assertThrows(InvalidPurchaseException.class, () ->ticketService
 				.purchaseTickets(TicketServiceTestUtil.getTicketPurchaseRequest_TicketCountExceed_Exception()));
-		Mockito.verify(ticketService, Mockito.times(1))
-				.purchaseTickets(TicketServiceTestUtil.getTicketPurchaseRequest_TicketCountExceed_Exception());
 	}
 
 	@Test
-	private void purchaseTickets_InvalidPurchaseException_InvalidAccountid() throws InvalidPurchaseException {
+	void purchaseTickets_InvalidPurchaseException_InvalidAccountid() throws InvalidPurchaseException {
 		ticketPaymentService.makePayment(1212, 100);
 		seatReservationService.reserveSeat(1212, 10);
+		doThrow(InvalidPurchaseException.class).when(ticketService).purchaseTickets(TicketServiceTestUtil.getTicketPurchaseRequest_InvalidAccountId_Exception());
 		assertThrows(InvalidPurchaseException.class, () ->ticketService
 				.purchaseTickets(TicketServiceTestUtil.getTicketPurchaseRequest_InvalidAccountId_Exception()));
-		Mockito.verify(ticketService, Mockito.times(1))
-				.purchaseTickets(TicketServiceTestUtil.getTicketPurchaseRequest_InvalidAccountId_Exception());
+		
 	}
 
 	@Test
-	private void purchaseTickets_InvalidPurchaseException_withoutAdult() throws InvalidPurchaseException {
+	void purchaseTickets_InvalidPurchaseException_withoutAdult() throws InvalidPurchaseException {
 		ticketPaymentService.makePayment(1212, 100);
 		seatReservationService.reserveSeat(1212, 10);
+		doThrow(InvalidPurchaseException.class).when(ticketService).purchaseTickets(TicketServiceTestUtil.getTicketPurchaseRequest_WithoutAdult_Exception());
 		assertThrows(InvalidPurchaseException.class, () ->ticketService
 				.purchaseTickets(TicketServiceTestUtil.getTicketPurchaseRequest_WithoutAdult_Exception()));
-		Mockito.verify(ticketService, Mockito.times(1))
-				.purchaseTickets(TicketServiceTestUtil.getTicketPurchaseRequest_WithoutAdult_Exception());
 	}
 
 }

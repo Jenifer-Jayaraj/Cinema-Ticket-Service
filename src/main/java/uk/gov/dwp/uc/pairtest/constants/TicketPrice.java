@@ -4,7 +4,7 @@
 package uk.gov.dwp.uc.pairtest.constants;
 
 /**
- * @author jayec
+ * @author jenifer
  *
  */
 public class TicketPrice {
